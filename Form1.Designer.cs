@@ -33,6 +33,7 @@ namespace GespantCouplerConfigurator
             this.lblStatusText = new System.Windows.Forms.Label();
             this.btnReboot = new System.Windows.Forms.Button();
             this.btnViewLogs = new System.Windows.Forms.Button();
+            this.btnReadDeviceInfo = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pbLogo)).BeginInit();
             this.SuspendLayout();
             // 
@@ -116,17 +117,17 @@ namespace GespantCouplerConfigurator
             // 
             // btnUpdate
             // 
-            this.btnUpdate.BackColor = System.Drawing.Color.FromArgb(0, 122, 204); // Deep Blue Accent
+            this.btnUpdate.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(204)))));
             this.btnUpdate.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnUpdate.FlatAppearance.BorderSize = 0; // Remove the thin black outline
-            this.btnUpdate.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(0, 80, 150); // Darker on click
-            this.btnUpdate.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(0, 150, 250); // Lighter on hover
+            this.btnUpdate.FlatAppearance.BorderSize = 0;
+            this.btnUpdate.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(80)))), ((int)(((byte)(150)))));
+            this.btnUpdate.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(150)))), ((int)(((byte)(250)))));
             this.btnUpdate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnUpdate.Font = new System.Drawing.Font("Segoe UI Semibold", 11.25F, System.Drawing.FontStyle.Bold);
             this.btnUpdate.ForeColor = System.Drawing.Color.White;
             this.btnUpdate.Location = new System.Drawing.Point(40, 420);
             this.btnUpdate.Name = "btnUpdate";
-            this.btnUpdate.Size = new System.Drawing.Size(310, 50); // Slightly taller for better touch/click target
+            this.btnUpdate.Size = new System.Drawing.Size(310, 50);
             this.btnUpdate.TabIndex = 11;
             this.btnUpdate.Text = "START UPDATE";
             this.btnUpdate.UseVisualStyleBackColor = false;
@@ -219,19 +220,18 @@ namespace GespantCouplerConfigurator
             // 
             // btnReboot
             // 
-            this.btnReboot.BackColor = System.Drawing.Color.FromArgb(45, 45, 48); // Match input background
+            this.btnReboot.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(48)))));
             this.btnReboot.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnReboot.Enabled = false; // Initially disabled
-            this.btnReboot.FlatAppearance.BorderColor = System.Drawing.Color.Tomato; // Border indicates danger
-            this.btnReboot.FlatAppearance.BorderSize = 1;
+            this.btnReboot.Enabled = false;
+            this.btnReboot.FlatAppearance.BorderColor = System.Drawing.Color.Tomato;
             this.btnReboot.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Maroon;
-            this.btnReboot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(60, 30, 30); // Dark red glow
+            this.btnReboot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.btnReboot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnReboot.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
-            this.btnReboot.ForeColor = System.Drawing.Color.Tomato; // High contrast text
-            this.btnReboot.Location = new System.Drawing.Point(40, 480); // Adjusted spacing
+            this.btnReboot.ForeColor = System.Drawing.Color.Tomato;
+            this.btnReboot.Location = new System.Drawing.Point(40, 480);
             this.btnReboot.Name = "btnReboot";
-            this.btnReboot.Size = new System.Drawing.Size(310, 40); // Slightly shorter than the main Update button
+            this.btnReboot.Size = new System.Drawing.Size(310, 40);
             this.btnReboot.TabIndex = 16;
             this.btnReboot.Text = "🔄  REBOOT COUPLER";
             this.btnReboot.UseVisualStyleBackColor = false;
@@ -239,22 +239,37 @@ namespace GespantCouplerConfigurator
             // 
             // btnViewLogs
             // 
-            this.btnViewLogs.BackColor = System.Drawing.Color.FromArgb(45, 45, 48); // Deep charcoal
+            this.btnViewLogs.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(48)))));
             this.btnViewLogs.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnViewLogs.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(80, 80, 80); // Subtle grey border
-            this.btnViewLogs.FlatAppearance.BorderSize = 1;
-            this.btnViewLogs.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(63, 63, 70); // Brighter grey on hover
+            this.btnViewLogs.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
+            this.btnViewLogs.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(63)))), ((int)(((byte)(70)))));
             this.btnViewLogs.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnViewLogs.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
-            this.btnViewLogs.ForeColor = System.Drawing.Color.FromArgb(224, 224, 224); // Soft white
+            this.btnViewLogs.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.btnViewLogs.Location = new System.Drawing.Point(594, 526);
             this.btnViewLogs.Name = "btnViewLogs";
             this.btnViewLogs.Size = new System.Drawing.Size(176, 35);
             this.btnViewLogs.TabIndex = 17;
             this.btnViewLogs.Text = "📋  VIEW LOGS";
-            this.btnViewLogs.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.btnViewLogs.UseVisualStyleBackColor = false; // Required for custom colors to show
+            this.btnViewLogs.UseVisualStyleBackColor = false;
             this.btnViewLogs.Click += new System.EventHandler(this.btnViewLogs_Click);
+            // 
+            // btnReadDeviceInfo
+            // 
+            this.btnReadDeviceInfo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(48)))));
+            this.btnReadDeviceInfo.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnReadDeviceInfo.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
+            this.btnReadDeviceInfo.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(63)))), ((int)(((byte)(70)))));
+            this.btnReadDeviceInfo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnReadDeviceInfo.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
+            this.btnReadDeviceInfo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.btnReadDeviceInfo.Location = new System.Drawing.Point(412, 526);
+            this.btnReadDeviceInfo.Name = "btnReadDeviceInfo";
+            this.btnReadDeviceInfo.Size = new System.Drawing.Size(176, 35);
+            this.btnReadDeviceInfo.TabIndex = 17;
+            this.btnReadDeviceInfo.Text = "🔍 READ DEVICE";
+            this.btnReadDeviceInfo.UseVisualStyleBackColor = false;
+            this.btnReadDeviceInfo.Click += new System.EventHandler(this.btnReadDeviceInfo_Click);
             // 
             // Form1
             // 
@@ -278,10 +293,11 @@ namespace GespantCouplerConfigurator
             this.Controls.Add(this.lblStatusText);
             this.Controls.Add(this.btnReboot);
             this.Controls.Add(this.btnViewLogs);
+            this.Controls.Add(this.btnReadDeviceInfo);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
-            this.Text = "GespantCoupler Configurator v1.0";
+            this.Text = "GespantCoupler Configurator v1.1";
             ((System.ComponentModel.ISupportInitialize)(this.pbLogo)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -306,5 +322,6 @@ namespace GespantCouplerConfigurator
         private System.Windows.Forms.Label lblStatusText;
         private System.Windows.Forms.Button btnReboot;
         private System.Windows.Forms.Button btnViewLogs;
+        private System.Windows.Forms.Button btnReadDeviceInfo;
     }
 }

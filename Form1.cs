@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
@@ -445,6 +446,63 @@ namespace GespantCouplerConfigurator
                 catch (Exception ex)
                 {
                     UpdateStatus("Failed to read logs: " + ex.Message, Color.Red);
+                }
+            });
+        }
+
+        private async void btnReadDeviceInfo_Click(object sender, EventArgs e)
+        {
+            string host = txtIpAddress.Text.Trim();
+            string pass = txtPassword.Text;
+
+            if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(pass))
+            {
+                MessageBox.Show("Please enter IP and Password first.", "Missing Credentials");
+                return;
+            }
+
+            UpdateStatus("Fetching Device Information...", Color.White);
+
+            await Task.Run(() =>
+            {
+                try
+                {
+                    using (var ssh = new SshClient(host, "root", pass))
+                    {
+                        ssh.Connect();
+
+                        // 1. Fetch Serial, Revision, and Model in one go
+                        // This command grabs the lines and formats them slightly for easier reading
+                        var cmd = ssh.RunCommand("cat /proc/cpuinfo | grep -E 'Serial|Revision|Model' | sed 's/\t//g'");
+                        string rawContent = cmd.Result.Trim();
+
+                        this.Invoke(new Action(() =>
+                        {
+                            if (string.IsNullOrWhiteSpace(rawContent))
+                            {
+                                UpdateStatus("Failed to retrieve hardware info.", Color.Yellow);
+                                MessageBox.Show("Hardware info could not be read from /proc/cpuinfo.", "Error");
+                            }
+                            else
+                            {
+                                UpdateStatus("Device information retrieved.", Color.Lime);
+
+                                // Displaying the multi-line result in a formatted box
+                                MessageBox.Show(rawContent,
+                                                "Device Identity",
+                                                MessageBoxButtons.OK,
+                                                MessageBoxIcon.Information);
+                            }
+                        }));
+
+                        ssh.Disconnect();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    this.Invoke(new Action(() => {
+                        UpdateStatus("Connection Error: " + ex.Message, Color.Red);
+                    }));
                 }
             });
         }
