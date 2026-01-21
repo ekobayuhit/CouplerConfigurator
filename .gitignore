@@ -1,0 +1,26 @@
+# IDE Folders
+.vs/
+.idea/
+.vscode/
+
+# Build Artifacts
+bin/
+obj/
+[debug]/
+[release]/
+publish/
+
+# User-specific files
+*.user
+*.userosscache
+*.sln.docstates
+
+# NuGet Packages
+packages/
+*.nuget.props
+*.nuget.targets
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
