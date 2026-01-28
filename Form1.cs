@@ -2,9 +2,11 @@
 using System.CodeDom.Compiler;
 using System.Drawing;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Renci.SshNet;
+using Timer = System.Windows.Forms.Timer;
 
 namespace GespantCouplerConfigurator
 {
@@ -15,6 +17,8 @@ namespace GespantCouplerConfigurator
         private bool isCheckingConnection = false;
         private bool deploymentSuccessful = false;
 
+        private bool isMonitoring = false;
+        private CancellationTokenSource cts;
         public Form1()
         {
             InitializeComponent();
@@ -505,6 +509,120 @@ namespace GespantCouplerConfigurator
                     }));
                 }
             });
+        }
+
+        private void btnCanMonitor_Click(object sender, EventArgs e)
+        {
+            if (!isMonitoring)
+            {
+                StartMonitoring();
+            }
+            else
+            {
+                StopMonitoring();
+            }
+        }
+
+        private void StartMonitoring()
+        {
+            string host = txtIpAddress.Text.Trim();
+            string pass = txtPassword.Text;
+
+            if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(pass))
+            {
+                MessageBox.Show("Please enter IP and Password first.", "Missing Credentials");
+                return;
+            }
+
+            isMonitoring = true;
+            btnCanMonitor.Text = "🛑 STOP MONITOR";
+            btnCanMonitor.ForeColor = Color.Tomato;
+            rtbLog.AppendText("\n--- Starting IO Bus Monitor ---\n");
+
+            cts = new CancellationTokenSource();
+
+            // Build the command based on your UI preferences
+            // -ta = absolute, -td = delta, -tr = relative
+            string timeFlag = "-ta"; // You could link this to a ComboBox
+
+            // Build filter: e.g., "can0" for all, or "can0,123:7FF" for specific
+            string filter = "can0";
+
+            string command = $"candump {timeFlag} {filter}";
+
+            Task.Run(() => {
+                try
+                {
+                    using (var client = new SshClient(host, "root", pass))
+                    {
+                        client.Connect();
+                        var cmd = client.CreateCommand(command);
+                        var asynch = cmd.BeginExecute();
+
+                        using (var reader = new StreamReader(cmd.OutputStream))
+                        {
+                            while (!cts.Token.IsCancellationRequested && !asynch.IsCompleted)
+                            {
+                                string line = reader.ReadLine();
+                                if (!string.IsNullOrWhiteSpace(line))
+                                {
+                                    // Regex to parse candump -ta format: (Timestamp) interface ID [DLC] Data...
+                                    var match = System.Text.RegularExpressions.Regex.Match(line, @"\((.*?)\)\s+can\d\s+([0-9A-F]+)\s+\[(\d+)\]\s+(.*)");
+
+                                    this.Invoke(new Action(() => {
+                                        if (match.Success)
+                                        {
+                                            string idHex = match.Groups[2].Value;
+                                            int id = int.Parse(idHex, System.Globalization.NumberStyles.HexNumber);
+                                            string data = match.Groups[4].Value;
+
+                                            // Check for CANopen EMCY (ID range 0x81 to 0xFF)
+                                            if (id >= 0x81 && id <= 0xFF)
+                                            {
+                                                rtbLog.SelectionBackColor = Color.Maroon;
+                                                rtbLog.SelectionColor = Color.White;
+                                                rtbLog.AppendText($"[EMCY Node {id - 0x80:X2}] {data}\n");
+                                                rtbLog.SelectionBackColor = rtbLog.BackColor; // Reset
+                                            }
+                                            else
+                                            {
+                                                rtbLog.SelectionColor = Color.LimeGreen;
+                                                rtbLog.AppendText($"{line}\n");
+                                            }
+                                        }
+                                        else
+                                        {
+                                            rtbLog.AppendText(line + "\n");
+                                        }
+
+                                        rtbLog.ScrollToCaret();
+
+                                        if (rtbLog.Lines.Length > 1000) rtbLog.Clear();
+                                    }));
+                                }
+                            }
+                        }
+                        client.Disconnect();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    if (isMonitoring) // Only show error if we didn't stop it ourselves
+                    {
+                        this.Invoke(new Action(() => rtbLog.AppendText("Monitor Error: " + ex.Message + "\n")));
+                        StopMonitoring();
+                    }
+                }
+            }, cts.Token);
+        }
+
+        private void StopMonitoring()
+        {
+            isMonitoring = false;
+            cts?.Cancel();
+            btnCanMonitor.Text = "📡 LIVE CAN MONITOR";
+            btnCanMonitor.ForeColor = Color.LimeGreen;
+            rtbLog.AppendText("--- Monitor Stopped ---\n");
         }
     }
 }

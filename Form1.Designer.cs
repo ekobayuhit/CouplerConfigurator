@@ -34,6 +34,7 @@ namespace GespantCouplerConfigurator
             this.btnReboot = new System.Windows.Forms.Button();
             this.btnViewLogs = new System.Windows.Forms.Button();
             this.btnReadDeviceInfo = new System.Windows.Forms.Button();
+            this.btnCanMonitor = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pbLogo)).BeginInit();
             this.SuspendLayout();
             // 
@@ -263,7 +264,7 @@ namespace GespantCouplerConfigurator
             this.btnReadDeviceInfo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnReadDeviceInfo.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
             this.btnReadDeviceInfo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.btnReadDeviceInfo.Location = new System.Drawing.Point(412, 526);
+            this.btnReadDeviceInfo.Location = new System.Drawing.Point(594, 567);
             this.btnReadDeviceInfo.Name = "btnReadDeviceInfo";
             this.btnReadDeviceInfo.Size = new System.Drawing.Size(176, 35);
             this.btnReadDeviceInfo.TabIndex = 17;
@@ -271,10 +272,27 @@ namespace GespantCouplerConfigurator
             this.btnReadDeviceInfo.UseVisualStyleBackColor = false;
             this.btnReadDeviceInfo.Click += new System.EventHandler(this.btnReadDeviceInfo_Click);
             // 
+            // btnCanMonitor
+            // 
+            this.btnCanMonitor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(48)))));
+            this.btnCanMonitor.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnCanMonitor.FlatAppearance.BorderColor = System.Drawing.Color.LimeGreen;
+            this.btnCanMonitor.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(60)))), ((int)(((byte)(0)))));
+            this.btnCanMonitor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCanMonitor.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
+            this.btnCanMonitor.ForeColor = System.Drawing.Color.LimeGreen;
+            this.btnCanMonitor.Location = new System.Drawing.Point(412, 526);
+            this.btnCanMonitor.Name = "btnCanMonitor";
+            this.btnCanMonitor.Size = new System.Drawing.Size(176, 35);
+            this.btnCanMonitor.TabIndex = 18;
+            this.btnCanMonitor.Text = "📡 LIVE IO BUS MONITOR";
+            this.btnCanMonitor.UseVisualStyleBackColor = false;
+            this.btnCanMonitor.Click += new System.EventHandler(this.btnCanMonitor_Click);
+            // 
             // Form1
             // 
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.ClientSize = new System.Drawing.Size(800, 573);
+            this.ClientSize = new System.Drawing.Size(800, 623);
             this.Controls.Add(this.pbLogo);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label1);
@@ -294,10 +312,11 @@ namespace GespantCouplerConfigurator
             this.Controls.Add(this.btnReboot);
             this.Controls.Add(this.btnViewLogs);
             this.Controls.Add(this.btnReadDeviceInfo);
+            this.Controls.Add(this.btnCanMonitor);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
-            this.Text = "GespantCoupler Configurator v1.1";
+            this.Text = "GespantCoupler Configurator v1.2";
             ((System.ComponentModel.ISupportInitialize)(this.pbLogo)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -323,5 +342,6 @@ namespace GespantCouplerConfigurator
         private System.Windows.Forms.Button btnReboot;
         private System.Windows.Forms.Button btnViewLogs;
         private System.Windows.Forms.Button btnReadDeviceInfo;
+        private System.Windows.Forms.Button btnCanMonitor;
     }
 }
