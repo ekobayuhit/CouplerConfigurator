@@ -316,7 +316,7 @@ namespace GespantCouplerConfigurator
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
-            this.Text = "GespantCoupler Configurator v1.2";
+            this.Text = "GespantCoupler Configurator v1.3";
             ((System.ComponentModel.ISupportInitialize)(this.pbLogo)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

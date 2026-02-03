@@ -233,8 +233,11 @@ namespace GespantCouplerConfigurator
             string destDir = "/home/Gespant/gespant-io-coupler-webserver/src/canopen_master";
             string Webserver_Service = "gespant_webserver.service";
             string ENIP_Service = "gespant_ENIP.service";
-            string ModbusTCP_Service = "gespant_modbus.service";
             string ENIP_APP_PREFIX = "GSP_COUPLER_ENIP";
+            string ENIP_APP_BIN = "Master";
+            string ModbusTCP_Service = "gespant_modbus.service";
+            string ModbusTCP_APP_PREFIX = "GSP_COUPLER_ModbusTCP";
+            string ModbusTCP_APP_BIN = "collector_client.bin";
 
             UpdateStatus($"Starting {protocol} deployment...", Color.Yellow);
 
@@ -256,79 +259,53 @@ namespace GespantCouplerConfigurator
                     using (var ssh = new SshClient(host, "root", pass))
                     {
                         string cmd_webserver = "";
+                        string APP_PREFIX = "";
+                        string APP_BIN = "";
                         ssh.Connect();
 
                         cmd_webserver = "systemctl stop " + Webserver_Service;
-                        // Stop current services
+                        // Stop current webserver services
                         ssh.RunCommand(cmd_webserver);
+                        // Stop the current protocol service
                         string service = protocol.Contains("EtherNet/IP") ? ENIP_Service : ModbusTCP_Service;
                         ssh.RunCommand($"systemctl stop {service}");
 
                         // Protocol Specific Logic
-                        if (protocol.Contains("Modbus"))
-                        {
-                            UpdateStatus("Stopping EtherNet/IP services...", Color.Yellow);
+                        if(protocol.Contains("Modbus"))
+{
+                            UpdateStatus("Stopping EtherNet/IP services for ModbusTCP deployment...", Color.Yellow);
                             ssh.RunCommand($"systemctl stop {ENIP_Service} && systemctl disable {ENIP_Service}");
-
-                            // STAGING: Extract to a separate temp folder first
-                            string tempExtractPath = "/tmp/modbus_staging";
-                            ssh.RunCommand($"rm -rf {tempExtractPath} && mkdir -p {tempExtractPath}");
-
-                            UpdateStatus("Extracting to staging area...", Color.White);
-                            ExecuteAndLog(ssh, $"unzip -oq /tmp/{fileName} -d {tempExtractPath}");
-
-                            // TARGETED CLEANUP (The Safest Way)
-                            // Instead of using 'find', we delete specific Python-related items only.
-                            // This guarantees 'Master' and 'logs' stay safe because we don't mention them.
-                            UpdateStatus("Removing old Modbus scripts...", Color.White);
-                            ssh.RunCommand($"rm -rf {destDir}/*.py {destDir}/venv {destDir}/__pycache__ {destDir}/frontend {destDir}/data");
-
-                            // DEPLOY: Move from staging to destination
-                            // This logic handles both: zip with a folder inside, or zip with files at root.
-                            UpdateStatus("Moving new files to destination...", Color.White);
-                            string moveCmd = $"cd {tempExtractPath} && " +
-                                             "IF_DIR=$(ls -d */ 2>/dev/null | head -1); " +
-                                             "if [ -n \"$IF_DIR\" ]; then " +
-                                             $"  mv \"$IF_DIR\"* {destDir}/; " + // Move contents of subfolder
-                                             "else " +
-                                             $"  mv * {destDir}/; " +             // Move files from root
-                                             "fi";
-                            ssh.RunCommand(moveCmd);
-
-                            // PERMISSIONS
-                            UpdateStatus("Setting permissions...", Color.White);
-                            ssh.RunCommand($"chmod +x {destDir}/*.py");
-                            ssh.RunCommand($"[ -d {destDir}/venv/bin ] && chmod -R +x {destDir}/venv/bin/*");
-
-                            // FINAL CLEANUP
-                            ssh.RunCommand($"rm -rf {tempExtractPath} /tmp/{fileName}");
+                            APP_PREFIX = ModbusTCP_APP_PREFIX;
+                            APP_BIN = ModbusTCP_APP_BIN;
                         }
                         else if (protocol.Contains("EtherNet/IP"))
                         {
                             UpdateStatus("Stopping ModbusTCP/IP services for EtherNet/IP deployment...", Color.Yellow);
                             ssh.RunCommand($"systemctl stop {ModbusTCP_Service} && systemctl disable {ModbusTCP_Service}");
+                            APP_PREFIX = ENIP_APP_PREFIX;
+                            APP_BIN = ENIP_APP_BIN;
+                        }
 
-                            // CLEANUP: Delete old versioned files to prevent confusion
-                            // We keep 'Master' (the link) but delete 'Master_v1', 'Master_Alpha', etc.
+                        // Scoped deployment block
+                        {
                             UpdateStatus("Cleaning up old binaries...", Color.Yellow);
-                            ssh.RunCommand($"find {destDir} -maxdepth 1 -type f -name '{ENIP_APP_PREFIX}_*' -delete");
+                            ssh.RunCommand($"find {destDir} -maxdepth 1 -type f -name '{APP_PREFIX}_*' -delete");
 
                             ExecuteAndLog(ssh, $"unzip -oj /tmp/{fileName} -d {destDir}");
 
-                            // IDENTIFY & LINK
-                            // Since we deleted the old ones, the ONLY 'Master_*' file now is the new one
+                            // FIXED: Added '$' for string interpolation and corrected variable name in the error message
                             string linkCmd = $"cd {destDir} && " +
-                                             $"NEW_BIN=$(ls -t {ENIP_APP_PREFIX}_* 2>/dev/null | head -1) && " +
+                                             $"NEW_BIN=$(ls -t {APP_PREFIX}_* 2>/dev/null | head -1) && " +
                                              "if [ -n \"$NEW_BIN\" ]; then " +
-                                             "  rm -f Master && ln -s \"$NEW_BIN\" Master && echo \"Linked Master to $NEW_BIN\"; " +
+                                            $"  rm -f {APP_BIN} && ln -s \"$NEW_BIN\" {APP_BIN} && echo \"Linked {APP_BIN} to $NEW_BIN\"; " +
                                              "else " +
-                                             "  echo \"Error: Extraction failed, no file with prefix {ENIP_APP_PREFIX} found!\"; " +
+                                            $"  echo \"Error: Extraction failed, no file with prefix {APP_PREFIX} found!\"; " +
                                              "fi";
 
                             ExecuteAndLog(ssh, linkCmd);
 
-                            // PERMISSIONS
-                            ssh.RunCommand($"chmod +x {destDir}/Master*");
+                            // PERMISSIONS: Using the dynamic APP_BIN path is safer than hardcoding the filename
+                            ssh.RunCommand($"chmod +x {destDir}/{APP_BIN}");
                         }
 
                         if (chkEnableLogger.Checked)
